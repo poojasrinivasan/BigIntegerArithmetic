@@ -87,10 +87,9 @@ public class Num implements Comparable<Num> {
 		}
 		if(rem > 0) {
 			sum.arr[i] = rem;
+			sum.len++;
 		}
-		else{
-			sum.len--;
-		}
+
 		
 		return sum;
 	}
@@ -152,8 +151,8 @@ public class Num implements Comparable<Num> {
 		}
 		
 		//Set length
-		int count = diff.arr.length-1;
-		while(diff.arr[count] <= 0) {
+		int count = diff.arr.length;
+		while(diff.arr[count-1] <= 0) {
 			count--;
 		}
 		diff.len = count;
@@ -205,9 +204,10 @@ public class Num implements Comparable<Num> {
 				res.arr[quotientIndex]+=total/base;
 			}
 		}
-		res.len = a.len+b.len-1;
-		if(res.arr[a.len+b.len-1]==0){
-			res.len = res.len-1;
+		res.len = a.len+b.len;
+		int index = a.len+b.len-1;
+		while(res.arr[index--]==0){
+			res.len--;
 		}
 		if(a.isNegative&&b.isNegative){
 			res.isNegative = false;
@@ -220,9 +220,19 @@ public class Num implements Comparable<Num> {
 
 	// Use divide and conquer
 	public static Num power(Num a, long n) {
-
-
-		return null;
+		if(n==0){
+			Num ans = new Num(1);
+			ans.arr = new long[1];
+			ans.arr[0]= 1;
+			return ans;
+		}
+        if(n==1) return a;
+        Num val= power(a,n/2);
+        Num prod = product(val,val);
+        if(n%2==0){
+        	return prod;
+		}
+		return product(prod,a);
 	}
 
 	// Use binary search to calculate a/b
@@ -305,7 +315,7 @@ public class Num implements Comparable<Num> {
 			System.out.print("-");
 		}
 
-		for(int i=len; i >= 0; i--) {
+		for(int i=len-1; i >= 0; i--) {
 			System.out.print(" " + arr[i]);
 		}
 		System.out.println("");
@@ -345,8 +355,9 @@ public class Num implements Comparable<Num> {
 	}
 
 	public static void main(String[] args) {
-		Num x = new Num(-123456700);
-		Num y = new Num(-92232323);
+		Num x = new Num(120005);
+		Num y = new Num(-1234567985);
+		Num input = new Num(-25000);
 		Num z = Num.add(x, y);
 		z.printList();
 		
@@ -354,6 +365,9 @@ public class Num implements Comparable<Num> {
 		z.printList();
 
 		z = Num.product(x,y);
+        z.printList();
+
+        z = Num.power(input,9);
         z.printList();
 
         //Num a = Num.power(x, 8);
