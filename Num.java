@@ -87,7 +87,9 @@ public class Num implements Comparable<Num> {
 		}
 		if(rem > 0) {
 			sum.arr[i] = rem;
-			sum.len++;
+		}
+		else{
+			sum.len--;
 		}
 		
 		return sum;
@@ -116,16 +118,14 @@ public class Num implements Comparable<Num> {
 				result.isNegative = a.isNegative;
 			}
 		}
+
 		return result;
 	}
 
 	private static Num subtractActual(Num a, Num b) {
 		long base = a.base();
-		
 		Num diff = new Num(0, base);
 		diff.arr = new long[Math.max(a.len, b.len)];
-		
-		
 		int i = 0;
 		while(i < a.len && i < b.len) {
 			if(a.arr[i] >= b.arr[i]) {
@@ -152,8 +152,8 @@ public class Num implements Comparable<Num> {
 		}
 		
 		//Set length
-		int count = diff.arr.length;
-		while(diff.arr[count-1] <= 0) {
+		int count = diff.arr.length-1;
+		while(diff.arr[count] <= 0) {
 			count--;
 		}
 		diff.len = count;
@@ -182,6 +182,8 @@ public class Num implements Comparable<Num> {
 				result = subtractActual(a,b);
 			} else {
 				result = new Num(0);
+				result.arr=new long[1];
+				return result;
 			}
 			
 			result.isNegative = b.isNegative;
@@ -190,11 +192,36 @@ public class Num implements Comparable<Num> {
 	}
 
 	public static Num product(Num a, Num b) {
-		return null;
+		Num res = new Num(0);
+		res.arr = new long[a.len+b.len];
+		long base = a.base();
+		for(int i = 0; i < a.len; i++){
+			for(int j = 0; j < b.len;j++){
+				long product = a.arr[i] * b.arr[j];
+				int remainderIndex = i+j;
+				int quotientIndex = i+j+1;
+				long total = res.arr[remainderIndex]+product;
+				res.arr[remainderIndex]=total%base;
+				res.arr[quotientIndex]+=total/base;
+			}
+		}
+		res.len = a.len+b.len-1;
+		if(res.arr[a.len+b.len-1]==0){
+			res.len = res.len-1;
+		}
+		if(a.isNegative&&b.isNegative){
+			res.isNegative = false;
+		}
+		else if(a.isNegative || b.isNegative){
+			res.isNegative = true;
+		}
+		return res;
 	}
 
 	// Use divide and conquer
 	public static Num power(Num a, long n) {
+
+
 		return null;
 	}
 
@@ -277,7 +304,8 @@ public class Num implements Comparable<Num> {
 		if(isNegative) {
 			System.out.print("-");
 		}
-		for(int i=0; i < len; i++) {
+
+		for(int i=len; i >= 0; i--) {
 			System.out.print(" " + arr[i]);
 		}
 		System.out.println("");
@@ -317,14 +345,18 @@ public class Num implements Comparable<Num> {
 	}
 
 	public static void main(String[] args) {
-		Num x = new Num(-9001);
-		Num y = new Num(29);
+		Num x = new Num(-123456700);
+		Num y = new Num(-92232323);
 		Num z = Num.add(x, y);
 		z.printList();
 		
 		z = Num.subtract(x, y);
 		z.printList();
-		//Num a = Num.power(x, 8);
+
+		z = Num.product(x,y);
+        z.printList();
+
+        //Num a = Num.power(x, 8);
 		//System.out.println(a);
 		//if (z != null)
 			//z.printList();
