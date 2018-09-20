@@ -34,6 +34,13 @@ public class Num implements Comparable<Num> {
 	public Num(long x, long base) {
 		this.base = base;
 		
+		// In case num 0, store 0 in arr[0]
+		if(x==0) {
+			arr = new long[1];
+			arr[0] = 0;
+			len = 1;
+		}
+			
 		//Divide x by base and save it in array
 		long val = x < 0 ? -x : x;
 		ArrayList<Long> array = new ArrayList<>();
@@ -91,7 +98,6 @@ public class Num implements Comparable<Num> {
 			sum.arr[i] = rem;
 			sum.len++;
 		}
-
 		
 		return sum;
 	}
@@ -184,8 +190,6 @@ public class Num implements Comparable<Num> {
 				result = subtractActual(a,b);
 			} else {
 				result = new Num(0);
-				result.arr=new long[1];
-				return result;
 			}
 			
 			result.isNegative = b.isNegative;
@@ -240,7 +244,58 @@ public class Num implements Comparable<Num> {
 
 	// Use binary search to calculate a/b
 	public static Num divide(Num a, Num b) {
+		
+		//Check for divide by 0 case
+		if(b.len==0 || (b.len==1 && b.arr[0] == 0)) {
+			System.out.println("Error: Divide by zero");
 		return null;
+	}
+
+		// Convert base of b if not same as a
+		long base = a.base();
+		if(base != b.base()) {
+			b = b.convertBase(base);
+		}
+		
+		Boolean aSign = a.isNegative;
+		Boolean bSign = b.isNegative;
+		
+		a.isNegative = b.isNegative  = false;
+		
+		Num result;
+		Num low = new Num(0, base);
+		Num high = new Num(a.toString(), base);
+		
+		while(true) {
+			Num mid = Num.add(high, low).by2();
+			
+			Num prod = Num.product(mid, b);
+			Num diff = Num.subtract(prod, a);
+			
+			//If difference is less than b/2 then break
+			diff.isNegative = false;
+			Num precision = Num.subtract(diff, b.by2()); //TODO may be +1
+			if(precision.compareTo(new Num(0, base)) <= 0) {
+				result = mid;
+				break;
+			}
+			
+			// Update high and low
+			if(prod.compareTo(a) <= 0) {
+				low = mid;
+			} else {
+				high = mid;
+			}
+		}
+		
+		//Update the result sign if one of them is -ve
+		if(aSign != bSign)
+			result.isNegative = true;
+		
+		//Revert the sign of a and b
+		a.isNegative = aSign;
+		b.isNegative = bSign;
+		return result;
 	}
 
 	// return a%b
@@ -250,7 +305,42 @@ public class Num implements Comparable<Num> {
 
 	// Use binary search
 	public static Num squareRoot(Num a) {
+		
+		//Check for negative numbers
+		if(a.isNegative) {
+			System.out.println("Error: Square root of negative number");
+			return null;
+		}
+				
+		//Check for 0 or 1
+		if(a.len==0 ||
+				(a.len==1 && (a.arr[0] == 0 || a.arr[0] == 1))) {
+			System.out.println("Error: Divide by zero");
 		return null;
+	}
+
+		Num result = null;
+		Num low = new Num(0, a.base());
+		Num high = a;
+		
+		while(low.compareTo(high) <= 0) {
+			Num mid = Num.add(high, low).by2();
+
+			int c = Num.product(mid, mid).compareTo(a);
+			// This is a perfect square
+			if(c == 0) {
+				return mid;
+			}
+			
+			if(c < 0) {
+				low = Num.add(mid, new Num(1, a.base()));
+				result = mid;
+			} else {
+				high = Num.subtract(mid, new Num(1, a.base()));
+			}
+		}
+		
+		return result;
 	}
 
 	private int compareAbs(Num other) {
@@ -378,26 +468,32 @@ public class Num implements Comparable<Num> {
 	}
 
 	public static void main(String[] args) {
-		Num x = new Num(2147979);
-		Num y = new Num(-120);
-		Num input = new Num(-25000);
-		/*Num z = Num.add(x, y);
+		Num x = new Num(120005);
+		Num y = new Num(-1234567985);
+		
+		System.out.println("Add:");
+		Num z = Num.add(x, y);
 		z.printList();
 		
+		System.out.println("Subtract:");
 		z = Num.subtract(x, y);
 		z.printList();
 
+		x = new Num(144);
+		System.out.println("By 2:");
+		x.by2().printList();
+		
+		System.out.println("Square root:");
+		squareRoot(x).printList();
+		
+		System.out.println("Product:");
 		z = Num.product(x,y);
         z.printList();
 
-        z = Num.power(input,9);
-        z.printList();*/
-
-		Num z = x.by2();
+		System.out.println("Power:");
+        x = new Num(-25000);
+        z = Num.power(x,9);
 		z.printList();
-        //Num a = Num.power(x, 8);
-		//System.out.println(a);
-		//if (z != null)
-			//z.printList();
+
 	}
 }
