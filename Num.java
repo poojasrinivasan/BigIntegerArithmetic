@@ -318,7 +318,7 @@ public class Num implements Comparable<Num> {
 			System.out.print("-");
 		}
 
-		for(int i=len-1; i >= 0; i--) {
+		for(int i=0; i < len; i++) {
 			System.out.print(" " + arr[i]);
 		}
 		System.out.println("");
