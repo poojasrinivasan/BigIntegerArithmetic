@@ -350,12 +350,7 @@ public class Num implements Comparable<Num> {
 			if(i!= this.len-1 || (i==this.len-1 && val/2!=0)) {
 				ans.add(0,val/2);
 			}
-			if(val < 2) {
-				rem = val;
-			}
-			else {
-				rem = val % 2;
-			}
+			rem = val % 2;
 			i--;
 		}
 		res.arr = new long[ans.size()];
