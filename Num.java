@@ -1,4 +1,3 @@
-
 // Starter code for lp1.
 // Version 1.0 (8:00 PM, Wed, Sep 5).
 
@@ -299,9 +298,20 @@ public class Num implements Comparable<Num> {
 	}
 
 	// return a%b
-	public static Num mod(Num a, Num b) {
-		return null;
-	}
+		public static Num mod(Num a, Num b) {
+			if(a.compareTo(b)<0) {
+				return a;
+			}
+			else if(a.compareTo(b)==0) {
+				return new Num(0);
+			}
+			else {
+				Num quotient = divide(a,b);
+				Num prod=product(b,quotient);
+				Num result = subtract(a,prod);
+				return result;	
+			}
+		}
 
 	// Use binary search
 	public static Num squareRoot(Num a) {
