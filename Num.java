@@ -5,6 +5,8 @@
 // Change following line to your NetId
 package axp178830;
 
+import java.util.List;
+import java.util.LinkedList;
 import java.util.ArrayList;
 
 public class Num implements Comparable<Num> {
@@ -93,7 +95,8 @@ public class Num implements Comparable<Num> {
 		
 		return sum;
 	}
-	
+
+
 	public static Num add(Num a, Num b) {
 		long base = a.base();
 		if(base != b.base()) {
@@ -337,7 +340,32 @@ public class Num implements Comparable<Num> {
 
 	// Divide by 2, for using in binary search
 	public Num by2() {
-		return null;
+		Num res = new Num(0);
+		List<Long> ans = new LinkedList<>();
+		int i = this.len-1;
+		long val = 0;
+		long rem = 0;
+		while(i >= 0) {
+			val = rem * this.base() + this.arr[i];
+			if(i!= this.len-1 || (i==this.len-1 && val/2!=0)) {
+				ans.add(0,val/2);
+			}
+			if(val < 2) {
+				rem = val;
+			}
+			else {
+				rem = val % 2;
+			}
+			i--;
+		}
+		res.arr = new long[ans.size()];
+		res.len = res.arr.length;
+		int j = 0;
+		for(Long temp : ans) {
+			res.arr[j++] = temp;
+		}
+		if(this.isNegative) {res.isNegative = true;}
+		return res;
 	}
 
 	// Evaluate an expression in postfix and return resulting number
@@ -355,10 +383,10 @@ public class Num implements Comparable<Num> {
 	}
 
 	public static void main(String[] args) {
-		Num x = new Num(120005);
-		Num y = new Num(-1234567985);
+		Num x = new Num(2147979);
+		Num y = new Num(-120);
 		Num input = new Num(-25000);
-		Num z = Num.add(x, y);
+		/*Num z = Num.add(x, y);
 		z.printList();
 		
 		z = Num.subtract(x, y);
@@ -368,8 +396,10 @@ public class Num implements Comparable<Num> {
         z.printList();
 
         z = Num.power(input,9);
-        z.printList();
+        z.printList();*/
 
+		Num z = x.by2();
+		z.printList();
         //Num a = Num.power(x, 8);
 		//System.out.println(a);
 		//if (z != null)
