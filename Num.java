@@ -2,7 +2,7 @@
 // Version 1.0 (8:00 PM, Wed, Sep 5).
 
 // Change following line to your NetId
-package axp178830;
+package demo1;
 
 import java.util.List;
 import java.util.LinkedList;
@@ -188,7 +188,10 @@ public class Num implements Comparable<Num> {
 			} else if(a.compareAbs(b) > 0) {
 				result = subtractActual(a,b);
 			} else {
-				result = new Num(0);
+				result = new Num(1);
+				result.arr = new long[1];
+				result.arr[0]= 0;
+				return result;
 			}
 			
 			result.isNegative = b.isNegative;
@@ -299,16 +302,28 @@ public class Num implements Comparable<Num> {
 
 	// return a%b
 		public static Num mod(Num a, Num b) {
+			Num result=new Num(1);
+			Num quotient=new Num(0);
+			quotient.len=a.arr.length;
+			Num prod=new Num(0);
+			prod.len=a.arr.length;
 			if(a.compareTo(b)<0) {
 				return a;
 			}
 			else if(a.compareTo(b)==0) {
-				return new Num(0);
+				Num ans = new Num(1);
+				ans.arr = new long[1];
+				ans.arr[0]= 0;
+				return ans;
 			}
 			else {
-				Num quotient = divide(a,b);
-				Num prod=product(b,quotient);
-				Num result = subtract(a,prod);
+				result.arr=new long[a.len];
+				result.len=a.arr.length;
+				quotient = divide(a,b);
+				System.out.println(quotient);
+				prod=product(b,quotient);
+				System.out.println(prod);
+				result = subtract(a,prod);
 				return result;	
 			}
 		}
@@ -435,7 +450,20 @@ public class Num implements Comparable<Num> {
 
 	// Return number equal to "this" number, in base=newBase
 	public Num convertBase(long newBase) {
+		
 		return null;
+	}
+	
+	public static Num convertBaseToDecimal(Num a) {
+		Num b = new Num(a.base());
+		if(a.base()==10) return a;
+		int len = a.len;
+		Num ans = new Num(a.arr[len-1]);
+		for(int i = len-2;i>=0;i--) {
+			ans = product(ans,b);
+			ans = add(ans,new Num(a.arr[i]));	
+		}
+		return ans;
 	}
 
 	// Divide by 2, for using in binary search
@@ -478,18 +506,18 @@ public class Num implements Comparable<Num> {
 	}
 
 	public static void main(String[] args) {
-		Num x = new Num(120005);
-		Num y = new Num(-1234567985);
+		Num x = new Num(12000);
+		Num y = new Num(12000);
 		
-		System.out.println("Add:");
+		/*System.out.println("Add:");
 		Num z = Num.add(x, y);
-		z.printList();
+		z.printList(); */
 		
 		System.out.println("Subtract:");
-		z = Num.subtract(x, y);
+		Num z = Num.subtract(x, y);
 		z.printList();
 
-		x = new Num(144);
+		/*x = new Num(144);
 		System.out.println("By 2:");
 		x.by2().printList();
 		
@@ -503,7 +531,17 @@ public class Num implements Comparable<Num> {
 		System.out.println("Power:");
         x = new Num(-25000);
         z = Num.power(x,9);
+		z.printList();*/
+		
+		System.out.println("Modulo:");
+		x=new Num(2000000);
+		y=new Num(200000);
+		z=Num.mod(x, y);
 		z.printList();
+		
+		/*Num x = new Num(521,30);
+		Num z = convertBaseToDecimal(x);
+		z.printList();*/
 
 	}
 }
