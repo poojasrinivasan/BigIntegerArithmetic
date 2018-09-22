@@ -2,10 +2,11 @@
 // Version 1.0 (8:00 PM, Wed, Sep 5).
 
 // Change following line to your NetId
-package demo1;
+package axp178830;
 
 import java.util.List;
 import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 public class Num implements Comparable<Num> {
@@ -188,10 +189,7 @@ public class Num implements Comparable<Num> {
 			} else if(a.compareAbs(b) > 0) {
 				result = subtractActual(a,b);
 			} else {
-				result = new Num(1);
-				result.arr = new long[1];
-				result.arr[0]= 0;
-				return result;
+				result = new Num(0);
 			}
 			
 			result.isNegative = b.isNegative;
@@ -491,18 +489,187 @@ public class Num implements Comparable<Num> {
 		return res;
 	}
 
-	// Evaluate an expression in postfix and return resulting number
-	// Each string is one of: "*", "+", "-", "/", "%", "^", "0", or
-	// a number: [1-9][0-9]*. There is no unary minus operator.
+	/** Evaluate an expression in postfix and return resulting number.
+	 *  Each string is one of: "*", "+", "-", "/", "%", "^", "0", or
+	 * 	a number: [1-9][0-9]*. There is no unary minus operator.
+	 * @param expr
+	 * @return
+	 */
 	public static Num evaluatePostfix(String[] expr) {
-		return null;
+		ArrayDeque<Num> valStack = new ArrayDeque<>();
+
+		for(int i = 0; i < expr.length; i++) {
+			String cur = expr[i];
+			
+			if (isOperator(cur)) {
+				Num secondOperand = valStack.pop();
+				Num firstOperand = valStack.pop();
+				valStack.push(doOperation(cur, firstOperand, secondOperand));
+			} else {
+				valStack.push(new Num(cur));
+			}
+		}
+		
+		return valStack.pop();
 	}
 
-	// Evaluate an expression in infix and return resulting number
-	// Each string is one of: "*", "+", "-", "/", "%", "^", "(", ")", "0", or
-	// a number: [1-9][0-9]*. There is no unary minus operator.
+	/**
+	 *  Returns the precedence of the operators
+	 * @param op
+	 * @return int	Precedence value
+	 */
+	private static int precedence(String op) { 
+		switch(op) {
+		case "+":
+		case "-":
+			return 0;
+		case "*":
+		case "/":
+		case "%":
+			return 1;
+		case "^":
+			return 2;
+		default:
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	/**
+	 * Returns if the operator is left associative
+	 * @param op
+	 * @return Boolean
+	 */
+	private static Boolean isLeftAssociative(String op) {
+		return (op == "+" || op=="-" || op == "*" || op == "/" || op == "%");
+	}
+	
+	/**
+	 *  Returns if the string is an operator
+	 * @param value
+	 * @return
+	 */
+	private static Boolean isOperator(String value) {
+		switch(value) {
+		case "+" :
+		case "-":
+		case "*":
+		case "/":
+		case "%":
+		case "^":
+			return true;
+		default:
+			return false;
+		}
+	}
+	
+	/**
+	 *  Performs the operation on the numbers
+	 * @param operand
+	 * @param first
+	 * @param second
+	 * @return
+	 */
+	private static Num doOperation(String operand, Num first, Num second) {
+		Num result;
+		switch(operand) {
+		case "+" :
+			result = add(first, second);
+			break;
+		case "-":
+			result = subtract(first, second);
+			break;
+		case "*":
+			result = product(first, second);
+			break;
+		case "/":
+			result = divide(first, second);
+			break;
+		case "%":
+			result = mod(first, second);
+			break;
+		case "^":
+			result = power(first, Long.parseLong(second.toString()));
+			break;
+		default:
+			throw new IllegalArgumentException();
+		}
+		return result;
+	}
+	
+	/**
+	 *  Evaluate an expression in infix and return resulting number
+	 *  Each string is one of: "*", "+", "-", "/", "%", "^", "(", ")", "0", or
+	 *  a number: [1-9][0-9]*. There is no unary minus operator.
+	 * @param expr
+	 * @return
+	 */
+
 	public static Num evaluateInfix(String[] expr) {
-		return null;
+		ArrayDeque<Num> valStack = new ArrayDeque<>();
+		ArrayDeque<String> opStack = new ArrayDeque<>();
+		
+		for(int i = 0; i < expr.length; i++) {
+			String cur = expr[i];
+			
+			if (isOperator(cur)) {
+				//Token is operator
+				// Until operator on stack top is not ( or
+				// precedence of operator on stack top is < the token,
+				// pop from stack to the output
+				while(!opStack.isEmpty() &&
+						opStack.peek() != "(" &&
+						(precedence(opStack.peek()) > precedence(cur) ||
+						(precedence(opStack.peek()) == precedence(cur) &&
+							isLeftAssociative(opStack.peek())))) {
+					
+					String operator = opStack.pop();
+					Num secondOperand = valStack.pop();
+					Num firstOperand = valStack.pop();
+					
+					//Do operation
+					valStack.push(doOperation(operator, firstOperand, secondOperand));
+				}
+				
+				// Now the precedence of top of stack < the token
+				// so now push the operator to stack
+				opStack.push(cur);
+			} else if (cur == "(") {
+				//Token is (
+				opStack.push(cur);
+				
+			} else if (cur == ")") {
+				//Token is )
+				String operator = opStack.pop();
+				// Pop all operators in stack to the output
+				// Until you pop the op (
+				while(operator != "(") {
+					Num secondOperand = valStack.pop();
+					Num firstOperand = valStack.pop();
+					
+					//Do operation
+					valStack.push(doOperation(operator, firstOperand, secondOperand));
+					
+					operator = opStack.pop();
+				}
+				
+			} else {
+				// Token is number
+				valStack.push(new Num(cur));
+				
+			}
+		}
+		
+		// Pop all the remaining op in stack to output
+		while(!opStack.isEmpty()) {
+			String operator = opStack.pop();
+			Num secondOperand = valStack.pop();
+			Num firstOperand = valStack.pop();
+			
+			//Do operation
+			valStack.push(doOperation(operator, firstOperand, secondOperand));
+		}
+		
+		return valStack.pop();
 	}
 
 	public static void main(String[] args) {
@@ -517,7 +684,7 @@ public class Num implements Comparable<Num> {
 		Num z = Num.subtract(x, y);
 		z.printList();
 
-		/*x = new Num(144);
+		x = new Num(144);
 		System.out.println("By 2:");
 		x.by2().printList();
 		
@@ -531,12 +698,12 @@ public class Num implements Comparable<Num> {
 		System.out.println("Power:");
         x = new Num(-25000);
         z = Num.power(x,9);
-		z.printList();*/
+		z.printList();
 		
 		System.out.println("Modulo:");
 		x=new Num(2000000);
 		y=new Num(200000);
-		z=Num.mod(x, y);
+		//z=Num.mod(x, y);
 		z.printList();
 		
 		/*Num x = new Num(521,30);
