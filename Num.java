@@ -2,7 +2,7 @@
 // Version 1.0 (8:00 PM, Wed, Sep 5).
 
 // Change following line to your NetId
-package demo1;
+package axp178830;
 
 import java.util.List;
 import java.util.LinkedList;
@@ -11,66 +11,120 @@ import java.util.ArrayList;
 public class Num implements Comparable<Num> {
 
 	static long defaultBase = 10;
-	long base;
+	long base = defaultBase;
 	long[] arr; // array to store arbitrarily large integers
 	boolean isNegative; // boolean flag to represent negative numbers
 	int len; // actual number of elements of array that are used; number is stored in
 				// arr[0..len-1]
 
 	public Num(String s) {
-		this(s, defaultBase);
+		// covert s to base 10
+		char[] characters = s.toCharArray();
+		int index = 0;
+		if(characters[0] == '-'){
+			index++;
+		}
+		// remove starting zeroes
+		while(index < characters.length && characters[index]=='0' ){
+			index++;
+		}
+		arr = new long[1];
+		Num res = new Num(0);
+		Num ten = new Num(10);
+		while(index < characters.length){
+			res = add(product(res,ten),new Num(Character.getNumericValue(characters[index])));
+			index++;
+		}
+		//res contains number in decimal format
+		if(characters[0] == '-') res.isNegative = true;
+        this.arr = res.arr;
+        this.len = res.len;
 	}
 
-	public Num(String s, long base) {
+/*	public Num(String s, long base) {
 		this.base = base;
 		//TODO
-	}
-	
+
+	}*/
+
 	public Num(long x) {
-		this(x, defaultBase);
+		// In case num 0, store 0 in arr[0]
+		if(x==0) {
+			arr = new long[1];
+			this.len = 1;
+		}
+		else{
+			//Divide x by base and save it in array
+			long val = x < 0 ? -x : x;
+
+			ArrayList<Long> array = new ArrayList<>();
+			while (val > 0) {
+				long rem = val % base;
+				val = val / base;
+				array.add(rem);
+			}
+
+			// Set length
+			len = array.size();
+
+			//TODO need to find a way to fill array without knowing size
+			// Method given in forum
+			arr = new long[len];
+			for (int i = 0; i < len; i++) {
+				arr[i] = array.get(i);
+			}
+
+			// Set isNegative
+			if (x < 0) {
+				isNegative = true;
+			} else {
+				isNegative = false;
+			}
+
+		}
 	}
 
-	public Num(long x, long base) {
+	/*public Num(long x, long base) {
 		this.base = base;
 		
 		// In case num 0, store 0 in arr[0]
 		if(x==0) {
 			arr = new long[1];
-			arr[0] = 0;
 			len = 1;
 		}
-			
-		//Divide x by base and save it in array
-		long val = x < 0 ? -x : x;
-		ArrayList<Long> array = new ArrayList<>();
-		while(val > 0) {
-			long rem = val%base;
-			val = val/base;
-			array.add(rem);
-		}
-		
-		// Set length
-		len = array.size();
+		else{
+            //Divide x by base and save it in array
+            long val = x < 0 ? -x : x;
 
-		//TODO need to find a way to fill array without knowing size
-		// Method given in forum
-		arr = new long[len];
-		for (int i=0; i< len; i++) {
-			arr[i] = array.get(i);
-		}
-		
-		// Set isNegative
-		if(x < 0) {
-			isNegative = true;
-		}
-		else {
-			isNegative = false;
-		}
-	}
+             ArrayList<Long> array = new ArrayList<>();
+            while (val > 0) {
+                long rem = val % base;
+                val = val / base;
+                array.add(rem);
+            }
+
+            // Set length
+            len = array.size();
+
+            //TODO need to find a way to fill array without knowing size
+            // Method given in forum
+            arr = new long[len];
+            for (int i = 0; i < len; i++) {
+                arr[i] = array.get(i);
+            }
+
+            // Set isNegative
+            if (x < 0) {
+                isNegative = true;
+            } else {
+                isNegative = false;
+            }
+        }
+	}*/
 	
 	private static Num addActual(Num a, Num b) {
 		long base = a.base();
-		Num sum = new Num(0, base);
+		Num sum = new Num(0);
 		sum.arr = new long[Math.max(a.len, b.len)+1];
 		sum.len = Math.max(a.len, b.len);
 		int i = 0;
@@ -131,7 +185,7 @@ public class Num implements Comparable<Num> {
 
 	private static Num subtractActual(Num a, Num b) {
 		long base = a.base();
-		Num diff = new Num(0, base);
+		Num diff = new Num(0);
 		diff.arr = new long[Math.max(a.len, b.len)];
 		int i = 0;
 		while(i < a.len && i < b.len) {
@@ -185,22 +239,22 @@ public class Num implements Comparable<Num> {
 		else {
 			if(a.compareAbs(b) < 0) {
 				result = subtractActual(b,a);
+				result.isNegative = true;
 			} else if(a.compareAbs(b) > 0) {
 				result = subtractActual(a,b);
+				result.isNegative = false;
 			} else {
-				result = new Num(1);
-				result.arr = new long[1];
-				result.arr[0]= 0;
+				result = new Num(0);
 				return result;
 			}
-			
-			result.isNegative = b.isNegative;
 		}
 		return result;
 	}
 
 	public static Num product(Num a, Num b) {
 		Num res = new Num(0);
+		Num zero = new Num(0);
+		if(a.compareTo(zero)==0 || b.compareTo(zero)==0) return res;
 		res.arr = new long[a.len+b.len];
 		long base = a.base();
 		for(int i = 0; i < a.len; i++){
@@ -248,6 +302,7 @@ public class Num implements Comparable<Num> {
 	public static Num divide(Num a, Num b) {
 		
 		//Check for divide by 0 case
+		Num dividend = new Num(a.toString());
 		if(b.len==0 || (b.len==1 && b.arr[0] == 0)) {
 			System.out.println("Error: Divide by zero");
 		return null;
@@ -264,24 +319,22 @@ public class Num implements Comparable<Num> {
 		
 		a.isNegative = b.isNegative  = false;
 		
-		Num result;
-		Num low = new Num(0, base);
-		Num high = new Num(a.toString(), base);
-		
-		while(true) {
+		Num result = new Num(0);
+		Num low = new Num(0);
+		//Num high = new Num(a.toString(), base);
+		Num high = a;
+		while(low.compareTo(high)<0) {
 			Num mid = Num.add(high, low).by2();
-			
 			Num prod = Num.product(mid, b);
 			Num diff = Num.subtract(prod, a);
 			
 			//If difference is less than b/2 then break
 			diff.isNegative = false;
-			Num precision = Num.subtract(diff, b.by2()); //TODO may be +1
-			if(precision.compareTo(new Num(0, base)) <= 0) {
+			//Num precision = Num.subtract(diff, b); //TODO may be +1
+			if(diff.compareTo(b) < 0) {
 				result = mid;
 				break;
 			}
-			
 			// Update high and low
 			if(prod.compareTo(a) <= 0) {
 				low = mid;
@@ -290,9 +343,10 @@ public class Num implements Comparable<Num> {
 			}
 		}
 		
-		//Update the result sign if one of them is -ve
-		if(aSign != bSign)
-			result.isNegative = true;
+		if(low.compareTo(high)==0){
+			result = low;
+		}
+		if(aSign != bSign) result.isNegative = true;
 		
 		//Revert the sign of a and b
 		a.isNegative = aSign;
@@ -304,16 +358,14 @@ public class Num implements Comparable<Num> {
 		public static Num mod(Num a, Num b) {
 			Num result=new Num(1);
 			Num quotient=new Num(0);
-			quotient.len=a.arr.length;
 			Num prod=new Num(0);
-			prod.len=a.arr.length;
 			if(a.compareTo(b)<0) {
 				return a;
 			}
 			else if(a.compareTo(b)==0) {
 				Num ans = new Num(1);
 				ans.arr = new long[1];
-				ans.arr[0]= 0;
+				ans.len = 1;
 				return ans;
 			}
 			else {
@@ -345,7 +397,7 @@ public class Num implements Comparable<Num> {
 	}
 
 		Num result = null;
-		Num low = new Num(0, a.base());
+		Num low = new Num(0);
 		Num high = a;
 		
 		while(low.compareTo(high) <= 0) {
@@ -358,10 +410,10 @@ public class Num implements Comparable<Num> {
 			}
 			
 			if(c < 0) {
-				low = Num.add(mid, new Num(1, a.base()));
+				low = Num.add(mid, new Num(1));
 				result = mid;
 			} else {
-				high = Num.subtract(mid, new Num(1, a.base()));
+				high = Num.subtract(mid, new Num(1));
 			}
 		}
 		
@@ -441,7 +493,16 @@ public class Num implements Comparable<Num> {
 
 	// Return number to a string in base 10
 	public String toString() {
-		return null;
+		Num decimalEquivalent = this.convertBaseToDecimal();
+		StringBuffer result = new StringBuffer();
+		if(this.isNegative){
+			result.append("-");
+		}
+		int length = decimalEquivalent.len-1;
+		while(length >= 0){
+			result.append(decimalEquivalent.arr[length--]);
+		}
+		return result.toString();
 	}
 
 	public long base() {
@@ -454,14 +515,14 @@ public class Num implements Comparable<Num> {
 		return null;
 	}
 	
-	public static Num convertBaseToDecimal(Num a) {
-		Num b = new Num(a.base());
-		if(a.base()==10) return a;
-		int len = a.len;
-		Num ans = new Num(a.arr[len-1]);
+	public Num convertBaseToDecimal() {
+		Num b = new Num(this.base());
+		if(this.base()==10) return this;
+		int len = this.len;
+		Num ans = new Num(this.arr[len-1]);
 		for(int i = len-2;i>=0;i--) {
 			ans = product(ans,b);
-			ans = add(ans,new Num(a.arr[i]));	
+			ans = add(ans,new Num(this.arr[i]));
 		}
 		return ans;
 	}
@@ -506,18 +567,17 @@ public class Num implements Comparable<Num> {
 	}
 
 	public static void main(String[] args) {
-		Num x = new Num(12000);
+		Num.defaultBase = 30;
+		Num x = new Num("12000");
 		Num y = new Num(12000);
-		
-		/*System.out.println("Add:");
+		System.out.println("Add:");
 		Num z = Num.add(x, y);
-		z.printList(); */
+		z.printList();
 		
 		System.out.println("Subtract:");
-		Num z = Num.subtract(x, y);
+		z = Num.subtract(x, y);
 		z.printList();
 
-		/*x = new Num(144);
 		System.out.println("By 2:");
 		x.by2().printList();
 		
@@ -531,14 +591,14 @@ public class Num implements Comparable<Num> {
 		System.out.println("Power:");
         x = new Num(-25000);
         z = Num.power(x,9);
-		z.printList();*/
-		
-		System.out.println("Modulo:");
-		x=new Num(2000000);
-		y=new Num(200000);
-		z=Num.mod(x, y);
 		z.printList();
-		
+
+	/*	System.out.println("divide:");
+		x=new Num(400);
+		y=new Num(10);
+		z=Num.divide(x, y);
+		z.printList();*/
+
 		/*Num x = new Num(521,30);
 		Num z = convertBaseToDecimal(x);
 		z.printList();*/
