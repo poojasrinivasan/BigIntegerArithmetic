@@ -220,15 +220,17 @@ public class Num implements Comparable<Num> {
 			result.isNegative= false;
 		}
 		else {
+			b.isNegative = !b.isNegative;
 			if(a.compareAbs(b) < 0) {
 				result = subtractActual(b,a);
-				result.isNegative = true;
+				result.isNegative = b.isNegative;
 			} else if(a.compareAbs(b) > 0) {
 				result = subtractActual(a,b);
-				result.isNegative = false;
+				result.isNegative = a.isNegative;
 			} else {
 				result = zero();
 			}
+			b.isNegative = !b.isNegative;
 		}
 		return result;
 	}
@@ -733,8 +735,25 @@ public class Num implements Comparable<Num> {
 	}
 
 	private static void testSubtract() {
-		Num a = new Num("9999999999999999999999999999999999999999999999999999999");
-		Num b = new Num("10000000000000000000000000000000000000000000000000000000");
+
+		Num a = new Num(-5);
+		Num b = new Num (-10);
+		System.out.println("Subtract"+Num.subtract(a,b));
+
+		a = new Num(-10);
+		b = new Num (-5);
+		System.out.println("Subtract"+Num.subtract(a,b));
+
+		a = new Num(5);
+		b = new Num (10);
+		System.out.println("Subtract"+Num.subtract(a,b));
+
+		a = new Num(10);
+		b = new Num (5);
+		System.out.println("Subtract"+Num.subtract(a,b));
+
+		a = new Num("9999999999999999999999999999999999999999999999999999999");
+		b = new Num("10000000000000000000000000000000000000000000000000000000");
 		System.out.println("Subtract 1: " + Num.subtract(a, b).toString());
 		
 		a = new Num("9999999999999999999999999999999999999999999999999999999");
@@ -771,17 +790,36 @@ public class Num implements Comparable<Num> {
 		b = new Num("1231231231231212");
 		System.out.println("Divide 4: " + Num.divide(a, b).toString());		
 		
-		a = new Num("123123123123");
+	/*	a = new Num("123123123123");
 		b = new Num("0");
-		System.out.println("Divide 4: " + Num.divide(a, b));
+		System.out.println("Divide 4: " + Num.divide(a, b));*/
 		
+	}
+
+	private static void testPower(){
+		Num a = new Num("60000000000");
+		long power = 10053;
+		System.out.println("Power: " + Num.power(a, power).toString());
+
+		a = new Num("60000000000");
+		power = 1;
+		System.out.println("Power: " + Num.power(a, power).toString());
+
+
+		a = new Num("60000000000");
+		power = 0;
+		System.out.println("Power: " + Num.power(a, power).toString());
 	}
 	
 	public static void main(String[] args) {
 		Num.defaultBase =  10000 ;
-		
-		testAdd();
 		testSubtract();
+	/*
+		testAdd();
 		testDivide();
+		testPower();*/
+
+		Num c = new Num("1023333333333333333344335555555555555555555555");
+		System.out.println(c.toString());
 	}
 }
