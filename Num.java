@@ -415,13 +415,16 @@ public class Num implements Comparable<Num> {
 		}
 				
 		//Check for 0 or 1
-		if(a.len==0 ||
-				(a.len==1 && (a.arr[0] == 0 || a.arr[0] == 1))) {
-			System.out.println("Error: Divide by zero");
+		if(a.len==0) {
+			System.out.println("Error: Enter some number");
 		return null;
 	}
+		if(a.len==1 && (a.compareAbs(new Num(4)) <= 0)) {
+			result = new Num(1);
+			return result;
+		}
 
-		Num result = null;
+		
 		Num low = new Num(0, a.base());
 		Num high = a.by2();
 		
