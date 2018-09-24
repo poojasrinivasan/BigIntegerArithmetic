@@ -124,7 +124,7 @@ public class TestMain {
     }
 
     private static void testSquareRoot(){
-        Num a = new Num(5);
+        Num a = new Num(0);
         Num z = Num.squareRoot(a);
         System.out.println("square root"+z.toString());
 

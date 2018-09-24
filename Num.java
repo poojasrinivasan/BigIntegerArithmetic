@@ -1,5 +1,6 @@
 // Starter code for lp1.
 // Version 1.0 (8:00 PM, Wed, Sep 5).
+/** @authors Akhila Perabe, Pooja Srinivasan, Shreeya Girish Degaonkar */
 
 // Change following line to your NetId
 package axp178830;
@@ -101,7 +102,7 @@ public class Num implements Comparable<Num> {
 	 * adds the given parameter a and b
 	 * @param a
 	 * @param b
-	 * @return
+	 * @return sum, of type Num, which is the sum of a and b 
 	 */
 	private static Num addActual(Num a, Num b) {
 		long base = a.base();
@@ -140,7 +141,7 @@ public class Num implements Comparable<Num> {
 	 * checks for the of a and b and performs addition or subtraction
 	 * @param a
 	 * @param b
-	 * @return
+	 * @return result, a Num which is the sum of a and b
 	 */
 	public static Num add(Num a, Num b) {
 		long base = a.base();
@@ -173,7 +174,7 @@ public class Num implements Comparable<Num> {
 	 * subtracts number b that is smaller from a
 	 * @param a
 	 * @param b
-	 * @return
+	 * @return diff, of type Num, which is the difference between a and b 
 	 */
 	private static Num subtractActual(Num a, Num b) {
 		long base = a.base();
@@ -222,7 +223,7 @@ public class Num implements Comparable<Num> {
 	 * compares number a and b and based on sign, performs addition or subtraction
 	 * @param a
 	 * @param b
-	 * @return
+	 * @return result, of type Num, the difference between a and b
 	 */
 	public static Num subtract(Num a, Num b) {
 		long base = a.base();
@@ -259,7 +260,7 @@ public class Num implements Comparable<Num> {
 	 * performs product of a and b using normal multiplication using O(n2) method
 	 * @param a
 	 * @param b
-	 * @return
+	 * @return res, a Num which is the product of a and b
 	 */
 	public static Num product(Num a, Num b) {
 		Num res = new Num(0,a.base());
@@ -298,7 +299,7 @@ public class Num implements Comparable<Num> {
 	 * calculates a ^ n using divide and conquer
 	 * @param a
 	 * @param n
-	 * @return
+	 * @return prod, a Num which is pow(a,n)
 	 */
 	public static Num power(Num a, long n) {
 		if(n==0){
@@ -317,7 +318,7 @@ public class Num implements Comparable<Num> {
 	 * method to calculate division using binary search
 	 * @param a
 	 * @param b
-	 * @return
+	 * @return mid, a Num which is the quotient of a/b 
 	 */
 	public static Num divide(Num a, Num b) {
 		
@@ -378,7 +379,7 @@ public class Num implements Comparable<Num> {
 	 * calculates mod using a - b*(a/b)
 	 * @param a
 	 * @param b
-	 * @return
+	 * @return returns result, a Num which is a%b
 	 */
 		public static Num mod(Num a, Num b) {
 			long base = a.base();
@@ -404,10 +405,10 @@ public class Num implements Comparable<Num> {
 	/**
 	 * method to calculate square root using binary search
 	 * @param a
-	 * @return
+	 * @return result, a Num which is sqrt(a)
 	 */
 	public static Num squareRoot(Num a) {
-		
+		Num result=new Num(0);
 		//Check for negative numbers
 		if(a.isNegative) {
 			System.out.println("Error: Square root of negative number");
@@ -449,7 +450,7 @@ public class Num implements Comparable<Num> {
 	/**
 	 * method to compare magnitude of two numbers
 	 * @param other
-	 * @return
+	 * @return an integer (0 when a==b, 1 when a>b or -1 when a<b)
 	 */
 	private int compareAbs(Num other) {
 			int flag = 0;
@@ -477,7 +478,7 @@ public class Num implements Comparable<Num> {
 	/**
 	 * method to compare 2 num objects
 	 * @param other
-	 * @return
+	 * @return an integer that determines which of the 2 objects is greater
 	 */
 	public int compareTo(Num other) {
 		if(this.isNegative != other.isNegative) {
@@ -542,7 +543,7 @@ public class Num implements Comparable<Num> {
 
 	/**
 	 * returns base of a number
-	 * @return
+	 * @return base
 	 */
 	public long base() {
 		return base;
@@ -551,7 +552,7 @@ public class Num implements Comparable<Num> {
 	/**
 	 *  Return number equal to "this" number, in base=newBase
 	 * * @param newBase
-	 * @return
+	 * @return res, the Num converted to the newBase
 	 */
 	public Num convertBase(long newBase) {
 		Num decimalEquivalent = this.convertBaseToDecimal();
@@ -561,7 +562,7 @@ public class Num implements Comparable<Num> {
 
 	/**
 	 * convert number in any base to decimal
-	 * @return
+	 * @return ans, a Num which the the given number in decimal form
 	 */
 	public Num convertBaseToDecimal() {
 		Num b = new Num(this.base(),10);
@@ -606,7 +607,7 @@ public class Num implements Comparable<Num> {
 	 *  Each string is one of: "*", "+", "-", "/", "%", "^", "0", or
 	 * 	a number: [1-9][0-9]*. There is no unary minus operator.
 	 * @param expr
-	 * @return
+	 * @return result of the postfix operation
 	 */
 	public static Num evaluatePostfix(String[] expr) {
 		ArrayDeque<Num> valStack = new ArrayDeque<>();
@@ -659,7 +660,7 @@ public class Num implements Comparable<Num> {
 	/**
 	 *  Returns if the string is an operator
 	 * @param value
-	 * @return
+	 * @return Boolean value
 	 */
 	private static Boolean isOperator(String value) {
 		switch(value) {
@@ -680,7 +681,7 @@ public class Num implements Comparable<Num> {
 	 * @param operand
 	 * @param first
 	 * @param second
-	 * @return
+	 * @return Num
 	 */
 	private static Num doOperation(String operand, Num first, Num second) {
 		Num result;
@@ -714,7 +715,7 @@ public class Num implements Comparable<Num> {
 	 *  Each string is one of: "*", "+", "-", "/", "%", "^", "(", ")", "0", or
 	 *  a number: [1-9][0-9]*. There is no unary minus operator.
 	 * @param expr
-	 * @return
+	 * @return Num, which is the result of the infix evaluation
 	 */
 
 	public static Num evaluateInfix(String[] expr) {
