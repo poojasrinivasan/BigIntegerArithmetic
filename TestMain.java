@@ -118,9 +118,9 @@ public class TestMain {
 
     private static void testMod(){
         Num a = new Num("15005555555444444444444");
-        Num b = new Num(2456);
+        Num b = new Num(0);
         Num z = Num.mod(a,b);
-        System.out.println("Mod" + z.toString());
+        System.out.println("Mod" + z);
     }
 
     private static void testSquareRoot(){
@@ -135,6 +135,7 @@ public class TestMain {
     public static void main(String[] args) {
         Num.defaultBase =  10 ;
         testSquareRoot();
+        testMod();
       /*   testInfix();
          testPostfix();*/
         //testSquareRoot();

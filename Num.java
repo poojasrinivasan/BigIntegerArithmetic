@@ -382,6 +382,7 @@ public class Num implements Comparable<Num> {
 	 * @return returns result, a Num which is a%b
 	 */
 		public static Num mod(Num a, Num b) {
+			if(b.compareTo(zero())==0) return null;
 			long base = a.base();
 			Num result=new Num(1, base);
 			Num quotient=new Num(0, base);
