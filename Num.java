@@ -3,9 +3,6 @@
 
 // Change following line to your NetId
 package axp178830;
-
-import java.util.List;
-import java.util.LinkedList;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
@@ -99,7 +96,13 @@ public class Num implements Comparable<Num> {
 	private static Num zero() {
 		return new Num(0);
 	}
-	
+
+	/**
+	 * adds the given parameter a and b
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	private static Num addActual(Num a, Num b) {
 		long base = a.base();
 		Num sum = new Num(0, base);
@@ -133,7 +136,12 @@ public class Num implements Comparable<Num> {
 		return sum;
 	}
 
-
+	/**
+	 * checks for the of a and b and performs addition or subtraction
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	public static Num add(Num a, Num b) {
 		long base = a.base();
 		if(base != b.base()) {
@@ -161,6 +169,12 @@ public class Num implements Comparable<Num> {
 		return result;
 	}
 
+	/**
+	 * subtracts number b that is smaller from a
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	private static Num subtractActual(Num a, Num b) {
 		long base = a.base();
 		Num diff = new Num(0, base);
@@ -203,7 +217,13 @@ public class Num implements Comparable<Num> {
 		diff.len = count;
 		return diff;
 	}
-	
+
+	/**
+	 * compares number a and b and based on sign, performs addition or subtraction
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	public static Num subtract(Num a, Num b) {
 		long base = a.base();
 		if(base != b.base()) {
@@ -235,6 +255,12 @@ public class Num implements Comparable<Num> {
 		return result;
 	}
 
+	/**
+	 * performs product of a and b using normal multiplication using O(n2) method
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	public static Num product(Num a, Num b) {
 		Num res = new Num(0,a.base());
 		Num zero = new Num(0,a.base());
@@ -268,7 +294,12 @@ public class Num implements Comparable<Num> {
 		return res;
 	}
 
-	// Use divide and conquer
+	/**
+	 * calculates a ^ n using divide and conquer
+	 * @param a
+	 * @param n
+	 * @return
+	 */
 	public static Num power(Num a, long n) {
 		if(n==0){
 			return one();
@@ -282,7 +313,12 @@ public class Num implements Comparable<Num> {
 		return product(prod,a);
 	}
 
-	// Use binary search to calculate a/b
+	/**
+	 * method to calculate division using binary search
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	public static Num divide(Num a, Num b) {
 		
 		//Check for divide by 0 case
@@ -338,7 +374,12 @@ public class Num implements Comparable<Num> {
 		return mid;
 	}
 
-	// return a%b
+	/**
+	 * calculates mod using a - b*(a/b)
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 		public static Num mod(Num a, Num b) {
 			long base = a.base();
 			Num result=new Num(1, base);
@@ -360,7 +401,11 @@ public class Num implements Comparable<Num> {
 			}
 		}
 
-	// Use binary search
+	/**
+	 * method to calculate square root using binary search
+	 * @param a
+	 * @return
+	 */
 	public static Num squareRoot(Num a) {
 		
 		//Check for negative numbers
@@ -382,13 +427,11 @@ public class Num implements Comparable<Num> {
 		
 		while(low.compareTo(high) <= 0) {
 			Num mid = Num.add(high, low).by2();
-			System.out.println(mid.toString());
 			int c = Num.product(mid, mid).compareTo(a);
 			// This is a perfect square
 			if(c == 0) {
 				return mid;
 			}
-			
 			if(c < 0) {
 				low = Num.add(mid, new Num(1, a.base()));
 				result = mid;
@@ -400,6 +443,11 @@ public class Num implements Comparable<Num> {
 		return result;
 	}
 
+	/**
+	 * method to compare magnitude of two numbers
+	 * @param other
+	 * @return
+	 */
 	private int compareAbs(Num other) {
 			int flag = 0;
 			if (this.len < other.len) {
@@ -422,10 +470,12 @@ public class Num implements Comparable<Num> {
 			}
 			return flag;
 	}
-	
-	// Utility functions
-	// compare "this" to "other": return +1 if this is greater, 0 if equal, -1
-	// otherwise
+
+	/**
+	 * method to compare 2 num objects
+	 * @param other
+	 * @return
+	 */
 	public int compareTo(Num other) {
 		if(this.isNegative != other.isNegative) {
 			return this.isNegative ? -1 : 1;
@@ -456,9 +506,9 @@ public class Num implements Comparable<Num> {
 		}
 	}
 
-	// Output using the format "base: elements of list ..."
+	/**Output using the format "base: elements of list ..."
 	// For example, if base=100, and the number stored corresponds to 10965,
-	// then the output is "100: 65 9 1"
+	// then the output is "100: 65 9 1" **/
 	public void printList() {
 		System.out.print(base + ":");
 		if(isNegative) {
@@ -471,7 +521,9 @@ public class Num implements Comparable<Num> {
 		System.out.println("");
 	}
 
-	// Return number to a string in base 10
+	/**
+	 *	Return number to a string in base 10
+	 */
 	public String toString() {
 		Num decimalEquivalent = this.convertBaseToDecimal();
 		StringBuffer result = new StringBuffer();
@@ -485,17 +537,29 @@ public class Num implements Comparable<Num> {
 		return result.toString();
 	}
 
+	/**
+	 * returns base of a number
+	 * @return
+	 */
 	public long base() {
 		return base;
 	}
 
-	// Return number equal to "this" number, in base=newBase
+	/**
+	 *  Return number equal to "this" number, in base=newBase
+	 * * @param newBase
+	 * @return
+	 */
 	public Num convertBase(long newBase) {
 		Num decimalEquivalent = this.convertBaseToDecimal();
 		Num res = new Num(decimalEquivalent.toString(),newBase);
 		return res;
 	}
-	
+
+	/**
+	 * convert number in any base to decimal
+	 * @return
+	 */
 	public Num convertBaseToDecimal() {
 		Num b = new Num(this.base(),10);
 		if(this.base()==10) return this;
@@ -509,7 +573,9 @@ public class Num implements Comparable<Num> {
 		return ans;
 	}
 
-	// Divide by 2, for using in binary search
+	/**
+	 * Divide by 2, for using in binary search
+ 	 */
 	public Num by2() {
 		Num res = new Num(0);
 		int size = this.len;
@@ -717,20 +783,20 @@ public class Num implements Comparable<Num> {
 	}
 
 	private static void testAdd() {
-		Num a = new Num("9999999999999999999999999999999999999999999999999999999");
-		Num b = new Num("10000000000000000000000000000000000000000000000000000000");
+		Num a = new Num("10");
+		Num b = new Num("5");
 		System.out.println("Add 1: " + Num.add(a, b).toString());
 		
-		a = new Num("9999999999999999999999999999999999999999999999999999999");
-		b = new Num("-10000000000000000000000000000000000000000000000000000000000");
+		a = new Num("10");
+		b = new Num("-5");
 		System.out.println("Add 2: " + Num.add(a, b).toString());
 		
-		a = new Num("-987654321987654321987654321");
-		b = new Num("111111111111111111111111111");
+		a = new Num("-10");
+		b = new Num("5");
 		System.out.println("Add 3: " + Num.add(a, b).toString());
 		
-		a = new Num("-123123123123123123123123123");
-		b = new Num("-456456456456456456456456456");
+		a = new Num("-10");
+		b = new Num("-5");
 		System.out.println("Add 4: " + Num.add(a, b).toString());
 	}
 
@@ -740,6 +806,9 @@ public class Num implements Comparable<Num> {
 		Num b = new Num (-10);
 		System.out.println("Subtract"+Num.subtract(a,b));
 
+		a = new Num(000003223);
+		b = new Num(10000);
+		System.out.println("SUBTRACT"+Num.subtract(a,b));
 		a = new Num(-10);
 		b = new Num (-5);
 		System.out.println("Subtract"+Num.subtract(a,b));
@@ -773,6 +842,11 @@ public class Num implements Comparable<Num> {
 		Num a = new Num(144);
 		Num b = new Num("-12");
 		System.out.println("Divide 1: " + Num.divide(a, b).toString());
+
+
+		a = new Num("-15005555555444444444444");
+		b = new Num(2456);
+		System.out.println(Num.divide(a,b).toString());
 		
 		a = new Num("-890728978164836463583465949575987349583410671073917697439673406704376017607439760197609760");
 		b = new Num("-983468365846581463587364578613485619274057108457409759175904797957");
@@ -797,12 +871,12 @@ public class Num implements Comparable<Num> {
 	}
 
 	private static void testPower(){
-		Num a = new Num("60000000000");
-		long power = 10053;
+		Num a = new Num("600");
+		long power = 19;
 		System.out.println("Power: " + Num.power(a, power).toString());
 
 		a = new Num("60000000000");
-		power = 1;
+		power = 00001L;
 		System.out.println("Power: " + Num.power(a, power).toString());
 
 
@@ -810,16 +884,50 @@ public class Num implements Comparable<Num> {
 		power = 0;
 		System.out.println("Power: " + Num.power(a, power).toString());
 	}
-	
-	public static void main(String[] args) {
-		Num.defaultBase =  10000 ;
-		testSubtract();
-	/*
-		testAdd();
-		testDivide();
-		testPower();*/
 
-		Num c = new Num("1023333333333333333344335555555555555555555555");
-		System.out.println(c.toString());
+	private static void testInfix(){
+		String[] s = {"5","*","3","^","(","4","-","2",")"};
+		Num z = Num.evaluateInfix(s);
+		System.out.println(z.toString());
+	}
+
+	private static void testPostfix(){
+		String[] s ={"17","10","+","3","*","9","/"};
+		Num z = Num.evaluatePostfix(s);
+		System.out.println(z.toString());
+	}
+
+	private static void testMod(){
+		Num a = new Num("15005555555444444444444");
+		Num b = new Num(2456);
+		Num z = Num.mod(a,b);
+		System.out.println("Mod" + z.toString());
+	}
+
+	private static void testSquareRoot(){
+		Num a = new Num(75);
+		Num z = Num.squareRoot(a);
+		System.out.println("square root"+z.toString());
+
+		a = new Num("17556555523332222222224666666666666666666666666666666666666666666666666666666666666666666666666666666666662222222222222222222222222000066666666666666456");
+		z = Num.squareRoot(a);
+		System.out.println("square root"+z.toString());
+	}
+	public static void main(String[] args) {
+		Num.defaultBase =  10 ;
+         testInfix();
+         testPostfix();
+		//testSquareRoot();
+	/*	Num a = new Num(3223);
+		Num b = new Num(10000);
+		System.out.println("SUBTRACT"+Num.subtract(a,b));*/
+		/*testAdd();
+		testSubtract();
+		testPower();*/
+	   /* testDivide();
+	    testMod();*/
+
+		/*Num c = new Num("1023333333333333333344335555555555555555555555");
+		System.out.println(c.toString());*/
 	}
 }
