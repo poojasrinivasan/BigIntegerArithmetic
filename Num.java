@@ -1,26 +1,42 @@
-// Starter code for lp1.
-// Version 1.0 (8:00 PM, Wed, Sep 5).
-/** @authors Akhila Perabe, Pooja Srinivasan, Shreeya Girish Degaonkar */
+/**
+ * @author Akhila Perabe, Pooja Srinivasan, Shreeya Girish Degaonkar
+ * 
+ *  Num class implementation for numbers larger than MAX(Long)
+ *  
+ *  Version History
+ *  1.0		09/05/2018 Base Code
+ *  2.0		09/20/2018 Implemented member functions
+ *  3.0		09/25/2018 Performance improvements
+ */
 
-// Change following line to your NetId
 package axp178830;
+
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 
 public class Num implements Comparable<Num> {
 
-	static long defaultBase = 10;
+	static long defaultBase = 1000000000;
 	long base = defaultBase;
+	
 	long[] arr; // array to store arbitrarily large integers
 	boolean isNegative; // boolean flag to represent negative numbers
 	int len; // actual number of elements of array that are used; number is stored in
 				// arr[0..len-1]
 
+	/**
+	 * Constructor for Num object with defaultBase
+	 * @param s		Number in string format
+	 */
 	public Num(String s) {
 		this(s,defaultBase);
 	}
 
-    public Num(String s, long base) {
+	/**
+	 * Constructor for Num object with the specified base
+	 * @param s		Number in the string format
+	 * @param base	Base for the number storage
+	 */
+    private Num(String s, long base) {
 		// covert s to base 10
 		this.base = base;
 		char[] characters = s.toCharArray();
@@ -36,7 +52,7 @@ public class Num implements Comparable<Num> {
 		Num res = new Num(0, base);
 		Num ten = new Num(10, base);
 		while(index < characters.length){
-			res = add(product(res,ten),new Num(Character.getNumericValue(characters[index])));
+			res = add(product(res,ten),new Num(Character.getNumericValue(characters[index]), base));
 			index++;
 		}
 		//res contains number in decimal format
@@ -45,11 +61,20 @@ public class Num implements Comparable<Num> {
 		this.arr = res.arr;
 		this.len = res.len;
 	}
-
+	
+    /**
+     * Constructor for Num object with default base
+     * @param x		Number in long
+     */
 	public Num(long x) {
 		this(x,defaultBase);
 	}
 
+	/**
+	 * Constructor for Num object with base specified
+	 * @param x		Number in long
+	 * @param base	Base for the number storage
+	 */
 	private Num(long x, long base) {
 		this.base = base;
 		
@@ -63,22 +88,20 @@ public class Num implements Comparable<Num> {
 			//Divide x by base and save it in array
 			long val = x < 0 ? -x : x;
 
-			ArrayList<Long> array = new ArrayList<>();
+			int maxLongDigits = 19;
+			int numDigits = (maxLongDigits+1)/ (int)Math.log10(base) + 1;
+			arr = new long[numDigits];
+
+			int count = 0;
 			while (val > 0) {
 				long rem = val % base;
 				val = val / base;
-				array.add(rem);
+				arr[count] = rem;
+				count++;
 			}
 
 			// Set length
-			len = array.size();
-
-			//TODO need to find a way to fill array without knowing size
-			// Method given in forum
-			arr = new long[len];
-			for (int i = 0; i < len; i++) {
-				arr[i] = array.get(i);
-			}
+			len = count;
 
 			// Set isNegative
 			if (x < 0) {
@@ -90,16 +113,25 @@ public class Num implements Comparable<Num> {
 		}
 	}
 	
+	/**
+	 * Returns a Num object with value 1
+	 * @return
+	 */
 	private static Num one() {
 		return new Num(1);
 	}
 	
+	/**
+	 * Returns a Num object with value 0
+	 * @return
+	 */
 	private static Num zero() {
 		return new Num(0);
 	}
 
+	
 	/**
-	 * adds the given parameter a and b
+	 * Adds the given parameter a and b
 	 * @param a
 	 * @param b
 	 * @return sum, of type Num, which is the sum of a and b 
@@ -323,7 +355,6 @@ public class Num implements Comparable<Num> {
 	public static Num divide(Num a, Num b) {
 		
 		//Check for divide by 0 case
-		Num dividend = new Num(a.toString(), a.base());
 		Num one = one();
 		Boolean aSign = a.isNegative;
 		Boolean bSign = b.isNegative;
