@@ -575,6 +575,10 @@ public class Num implements Comparable<Num> {
 			result.append("-");
 		}
 		int index = len-1;
+		if(index>=0) {
+			result.append(arr[index]);
+			index--;
+		}
 		while(index>=0) {
 			result.append(String.format("%09d", arr[index]));
 			index--;
