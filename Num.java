@@ -4,7 +4,7 @@
  *  Num class implementation for numbers larger than MAX(Long)
  *  
  *  Version History
- *  1.0		09/05/2018 Base Code
+ *  1.0		09/05/2018 Base Code					
  *  2.0		09/20/2018 Implemented member functions
  *  3.0		09/25/2018 Performance improvements
  */
@@ -297,10 +297,13 @@ public class Num implements Comparable<Num> {
 	public static Num product(Num a, Num b) {
 		Num res = new Num(0,a.base());
 		Num zero = new Num(0,a.base());
+		
 		if (b.base()!=a.base()){
 			b.convertBase(a.base);
 		}
+		
 		if(a.compareTo(zero)==0 || b.compareTo(zero)==0) return res;
+		
 		res.arr = new long[a.len+b.len];
 		long base = a.base();
 		for(int i = 0; i < a.len; i++){
@@ -313,17 +316,22 @@ public class Num implements Comparable<Num> {
 				res.arr[quotientIndex]+=total/base;
 			}
 		}
+		
+		//Update result length
 		res.len = a.len+b.len;
 		int index = a.len+b.len-1;
 		while(res.arr[index--]==0){
 			res.len--;
 		}
+		
+		//Update result sign
 		if(a.isNegative&&b.isNegative){
 			res.isNegative = false;
 		}
 		else if(a.isNegative || b.isNegative){
 			res.isNegative = true;
 		}
+		
 		return res;
 	}
 
@@ -334,10 +342,10 @@ public class Num implements Comparable<Num> {
 	 * @return prod, a Num which is pow(a,n)
 	 */
 	public static Num power(Num a, long n) {
-		if(n==0){
-			return one();
-		}
+		
+		if(n==0) return one();
         if(n==1) return a;
+        
         Num val= power(a,n/2);
         Num prod = product(val,val);
         if(n%2==0){
@@ -558,11 +566,33 @@ public class Num implements Comparable<Num> {
 	}
 
 	/**
+	 * Custom toString for the default base of 10^9
+	 * @return
+	 */
+	private String customToString() {
+		StringBuilder result = new StringBuilder();
+		if(this.isNegative){
+			result.append("-");
+		}
+		int index = len-1;
+		while(index>=0) {
+			result.append(String.format("%09d", arr[index]));
+			index--;
+		}
+		return result.toString();
+	}
+	
+	/**
 	 *	Return number to a string in base 10
 	 */
 	public String toString() {
+		if(base == defaultBase) {
+			//10 power 9 base
+			return customToString();
+		}
+		
 		Num decimalEquivalent = this.convertBaseToDecimal();
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		if(this.isNegative){
 			result.append("-");
 		}
