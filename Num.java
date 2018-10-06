@@ -590,12 +590,12 @@ public class Num implements Comparable<Num> {
 	 *	Return number to a string in base 10
 	 */
 	public String toString() {
-		if(base == defaultBase) {
+		//if(base == defaultBase) {
 			//10 power 9 base
 			return customToString();
-		}
-		
-		Num decimalEquivalent = this.convertBaseToDecimal();
+		//}
+
+		/*Num decimalEquivalent = this.convertBaseToDecimal();
 		StringBuilder result = new StringBuilder();
 		if(this.isNegative){
 			result.append("-");
@@ -604,7 +604,7 @@ public class Num implements Comparable<Num> {
 		while(length >= 0){
 			result.append(decimalEquivalent.arr[length--]);
 		}
-		return result.toString();
+		return result.toString();*/
 	}
 
 	/**
@@ -621,8 +621,8 @@ public class Num implements Comparable<Num> {
 	 * @return res, the Num converted to the newBase
 	 */
 	public Num convertBase(long newBase) {
-		Num decimalEquivalent = this.convertBaseToDecimal();
-		Num res = new Num(decimalEquivalent.toString(),newBase);
+		//Num decimalEquivalent = this.convertBaseToDecimal();
+		Num res = new Num(this.toString(),newBase);
 		return res;
 	}
 
