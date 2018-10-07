@@ -37,27 +37,27 @@ public class Num implements Comparable<Num> {
 	 * @param base	Base for the number storage
 	 */
     private Num(String s, long base) {
-		// covert s to base 10
 		this.base = base;
-		char[] characters = s.toCharArray();
+		
 		int index = 0;
-		if(characters[0] == '-'){
+		if(s.charAt(0) == '-'){
 			index++;
+			this.isNegative = true;
 		}
+		
 		// remove starting zeroes
-		while(index < characters.length && characters[index]=='0' ){
+		while(index < s.length() && s.charAt(index)=='0' ){
 			index++;
 		}
+		
+		//Take digits and create the arr in given base
 		arr = new long[1];
 		Num res = new Num(0, base);
 		Num ten = new Num(10, base);
-		while(index < characters.length){
-			res = add(product(res,ten),new Num(Character.getNumericValue(characters[index]), base));
+		while(index < s.length()){
+			res = add(product(res,ten),new Num(Character.getNumericValue(s.charAt(index)), base));
 			index++;
 		}
-		//res contains number in decimal format
-		if(characters[0] == '-')
-			this.isNegative = true;
 		this.arr = res.arr;
 		this.len = res.len;
 	}
@@ -391,12 +391,10 @@ public class Num implements Comparable<Num> {
 
 		Num mid = new Num(0, base);
 		Num low = new Num(1, base);
-		//Num high = new Num(a.toString(), base);
 		Num high = a.by2();
 		while(low.compareTo(high)<=0) {
 			mid = Num.add(high, low).by2();
 			Num prod = Num.product(mid, b);
-			//Num diff = Num.subtract(prod, a);
             if(prod.compareTo(a) == 1){
             	high = subtract(mid,new Num(1, base));
 			}
@@ -524,25 +522,7 @@ public class Num implements Comparable<Num> {
 		if(this.isNegative != other.isNegative) {
 			return this.isNegative ? -1 : 1;
 		} else {
-			int flag = 0;
-			if (this.len < other.len) {
-				flag = -1;
-			} else if (other.len < this.len) {
-				flag =  1;
-			} else {
-				int i = this.len - 1;
-				while (i >= 0) {
-					if (this.arr[i] > other.arr[i]) {
-						flag = 1;
-						break;
-					} else if (this.arr[i] < other.arr[i]) {
-						flag = -1;
-						break;
-					} else {
-						i--;
-					}
-				}
-			}
+			int flag = compareAbs(other);
 			if(this.isNegative && other.isNegative) {
 				return -flag;
 			}
@@ -621,7 +601,6 @@ public class Num implements Comparable<Num> {
 	 * @return res, the Num converted to the newBase
 	 */
 	public Num convertBase(long newBase) {
-		//Num decimalEquivalent = this.convertBaseToDecimal();
 		Num res = new Num(this.toString(),newBase);
 		return res;
 	}
@@ -631,8 +610,9 @@ public class Num implements Comparable<Num> {
 	 * @return ans, a Num which the the given number in decimal form
 	 */
 	public Num convertBaseToDecimal() {
-		Num b = new Num(this.base(),10);
 		if(this.base()==10) return this;
+		
+		Num b = new Num(this.base(),10);
 		int len = this.len;
 		Num ans = new Num(this.arr[len-1],10);
 		for(int i = len-2;i>=0;i--) {
